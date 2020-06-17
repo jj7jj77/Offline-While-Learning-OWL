@@ -1,0 +1,20 @@
+Public Class AssessmentResults
+    Private Sub BtnContinue_Click(sender As Object, e As EventArgs) Handles BtnContinue.Click
+        ProblemSet.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub AssessmentResults_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Displays the discipline type and the amount of correct answers for each discipline
+        corrLabel.Text = corrCount
+        questionLabel.Text = questionCount
+        addLabel.Text = addCount
+        addCorrLabel.Text = addCorrCount
+        subCorrLabel.Text = subCorrCount
+        subLabel.Text = subCount
+        multCorrLabel.Text = multCorrCount
+        multLabel.Text = multCount
+        divCorrLabel.Text = divCorrCount
+        divLabel.Text = divCount
+    End Sub
+End Class
