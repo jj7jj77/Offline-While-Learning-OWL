@@ -1,0 +1,117 @@
+Imports System.Data.OleDb
+Imports System.Data
+Public Class Quiz
+    Dim connection As New OleDbConnection(My.Settings.OWL_DBConnectionString)
+    Dim sql As String
+    Dim dataAdapter As OleDb.OleDbDataAdapter
+    Dim dataSet As New DataSet
+    Dim MaxRows As Integer
+    Dim n As Integer = 0
+    Dim ans As Integer
+    Dim disc As Integer
+    Private Sub NavigateRecords()
+        If n < 10 Then
+            questionLabel.Text = dataSet.Tables("OWL_DB").Rows(n).Item("question")
+            ans = dataSet.Tables("OWL_DB").Rows(n).Item("answer")
+        Else Me.Close()
+            QuizResults.Show()
+        End If
+    End Sub
+    Private Sub Quiz_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Open connection
+        If connection.State = ConnectionState.Closed Then
+            connection.Open()
+        End If
+        'set quiz question types
+        If QuizType = 1 Then
+            'set addition problem set
+            sql = "Select question, answer from Questions where disciplineID = 1"
+            typeLabel.Text = "Addition"
+        ElseIf QuizType = 2 Then
+            'set subtraction problem set
+            sql = "Select question, answer from Questions where disciplineID = 2"
+            typeLabel.Text = "Subtraction"
+        ElseIf QuizType = 3 Then
+            'set multiplication problem set
+            sql = "Select question, answer from Questions where disciplineID = 3"
+            typeLabel.Text = "Multiplication"
+        ElseIf QuizType = 4 Then
+            'set division problem set
+            sql = "Select question, answer from Questions where disciplineID = 4"
+            typeLabel.Text = "Division"
+        End If
+        'Setup dataAdapter for Questions table
+        dataAdapter = New OleDb.OleDbDataAdapter(sql, connection)
+        Dim cmd As New OleDbCommand(sql, connection)
+        'Fill dataSet with Questions table
+        dataAdapter.Fill(dataSet, "OWL_DB")
+        'Store max amount of rows in table through variable 'MaxRows'
+        MaxRows = dataSet.Tables("OWL_DB").Rows.Count
+        'Variable 'n' used to keep track of what row is currently being utilized
+        questionLabel.Text = dataSet.Tables("OWL_DB").Rows(n).Item("question")
+        ans = dataSet.Tables("OWL_DB").Rows(n).Item("answer")
+        'Variable 'questionCount' used to keep count of how many questions asked so far
+        questionCount = 1
+    End Sub
+
+    Private Sub subBtn_Click(sender As Object, e As EventArgs) Handles submitBtn.Click
+        'Reopen connection if connection somehow closed
+        If connection.State = ConnectionState.Closed Then
+            connection.Open()
+        End If
+        If n <= 10 Then
+            'If statements that compare user-entered answer with correct answer in Answers table. Also keeps track of how many answers were correct for each discipline.
+            If String.IsNullOrEmpty(answerBox.Text) Then
+                MsgBox("Please enter a value.")
+            ElseIf answerBox.Text = CStr(ans) Then
+                corrLabel.Text = "Correct!"
+                answerBox.Enabled = False
+                submitBtn.Visible = False
+                nextBtn.Visible = True
+                corrCount = corrCount + 1
+            Else
+                'Displays correct answer if user was wrong. Disables answerBox to prevent user from cheating.
+                corrLabel.Text = "Incorrect!"
+                answerLabel.Text = "Correct Answer is: " + dataSet.Tables("OWL_DB").Rows(n).Item("answer").ToString()
+                answerBox.Enabled = False
+                submitBtn.Visible = False
+                nextBtn.Visible = True
+            End If
+            If n = 9 Then
+                nextBtn.Text = "Final Results"
+            End If
+        End If
+    End Sub
+    Private Sub nextBtn_Click(sender As Object, e As EventArgs) Handles nextBtn.Click
+        'Reopen connection if connection somehow closed
+        If connection.State = ConnectionState.Closed Then
+            connection.Open()
+        End If
+        answerBox.Text = ""
+        corrLabel.Text = ""
+        answerLabel.Text = ""
+        'Resets labels and answer box to blank for next question
+        'Move to next row in Questions and Answers tables if there is another row to move on to.
+        If n <> MaxRows Then
+            n = n + 1
+            'Add to question counter
+            questionCount = questionCount + 1
+            'Reenable answerBox
+            answerBox.Enabled = True
+            submitBtn.Visible = True
+            nextBtn.Visible = False
+            'Call functions to navigate to the next question and answer
+            NavigateRecords()
+        End If
+    End Sub
+
+    Private Sub ReturnBtn_Click(sender As Object, e As EventArgs) Handles ReturnBtn.Click
+        ProblemSet.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub ExitBtn_Click(sender As Object, e As EventArgs) Handles ExitBtn.Click
+        Login.Show()
+        Me.Hide()
+    End Sub
+End Class
