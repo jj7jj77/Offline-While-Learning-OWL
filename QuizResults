@@ -1,0 +1,26 @@
+Imports System.Data.OleDb
+Imports System.Data
+Public Class QuizResults
+    Dim connection As New OleDbConnection(My.Settings.OWL_DBConnectionString)
+    Dim sql As String
+    Dim dataAdapter As OleDb.OleDbDataAdapter
+    Dim dataSet As New DataSet
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles returnBtn.Click
+        ProblemSet.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub QuizResults_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If connection.State = ConnectionState.Closed Then
+            connection.Open()
+        End If
+        questionCount = questionCount - 1
+        Dim finalScore As Integer = (corrCount / questionCount) * 100
+        sql = "Insert Into Grades (userID, score, disciplineID) Values (" & UserID & "," & finalScore & "," & QuizType & ")"
+        dataAdapter = New OleDb.OleDbDataAdapter(sql, connection)
+        Dim cmd As New OleDbCommand(sql, connection)
+        dataAdapter.Fill(dataSet, "OWL_DB")
+        correctNum.Text = corrCount
+        totNum.Text = questionCount
+    End Sub
+End Class
