@@ -1,0 +1,6 @@
+Module disciplineCounter
+    Friend addCount = 0
+    Friend subCount = 0
+    Friend multCount = 0
+    Friend divCount = 0
+End Module
