@@ -1,0 +1,6 @@
+Module DiscVar
+    Friend QuizType As Integer
+    Friend logUserID As Integer
+    Friend finalScore As Integer
+    Friend UserID As Integer
+End Module
