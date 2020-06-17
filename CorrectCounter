@@ -1,0 +1,8 @@
+Module correctCounter
+    Friend corrCount = 0
+    Friend questionCount = 0
+    Friend addCorrCount = 0
+    Friend subCorrCount = 0
+    Friend multCorrCount = 0
+    Friend divCorrCount = 0
+End Module
