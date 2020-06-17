@@ -1,0 +1,118 @@
+Imports System.Data.OleDb
+Imports System.Data
+Public Class AssessmentTest
+    Dim connection As New OleDbConnection(My.Settings.OWL_DBConnectionString)
+    Dim sql As String
+    Dim dataAdapter As OleDb.OleDbDataAdapter
+    Dim dataSet As New DataSet
+    Dim MaxRows As Integer
+    Dim n As Integer
+    Dim ans As Integer
+    Dim disc As Integer
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles exitBtn.Click
+        End
+    End Sub
+    Private Sub NavigateRecords()
+        'Display next question and store question's discipline in disc
+        questionLabel.Text = dataSet.Tables("OWL_DB").Rows(n).Item("question")
+        'Gets next correct answer to be compared with user answer
+        ans = dataSet.Tables("OWL_DB").Rows(n).Item("answer")
+        disc = dataSet.Tables("OWL_DB").Rows(n).Item("disciplineID")
+        If disc = 1 Then
+            addCount = addCount + 1
+        ElseIf disc = 2 Then
+            subCount = subCount + 1
+        ElseIf disc = 3 Then
+            multCount = multCount + 1
+        ElseIf disc = 4 Then
+            divCount = divCount + 1
+        End If
+    End Sub
+    Private Sub AssessmentTest_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Open connection
+        If connection.State = ConnectionState.Closed Then
+            connection.Open()
+        End If
+        'SQL command to access 'question' and 'disciplineID' columns from AssessmentQuestions table
+        sql = "Select question, disciplineID, answer from AssessmentQuestions"
+        'Setup dataAdapter for Questions table
+        dataAdapter = New OleDb.OleDbDataAdapter(sql, connection)
+        Dim cmd As New OleDbCommand(sql, connection)
+        'Fill dataSet with Questions table
+        dataAdapter.Fill(dataSet, "OWL_DB")
+        'Store max amount of rows in table through variable 'MaxRows'
+        MaxRows = dataSet.Tables("OWL_DB").Rows.Count
+        'Variable 'n' used to keep track of what row is currently being utilized
+        n = 0
+        'Variable 'questionCount' used to keep count of how many questions asked so far
+        questionCount = 1
+        'Label displays question on current row
+        questionLabel.Text = dataSet.Tables("OWL_DB").Rows(n).Item("question")
+        'Store disciplineID in variable 'disc'
+        disc = dataSet.Tables("OWL_DB").Rows(n).Item("disciplineID")
+        'If statements used to differentiate what type of disciplineID each question is. Each discipline has a counter to keep track of how many questions are in each discipline
+        If disc = 1 Then
+            addCount = addCount + 1
+        ElseIf disc = 2 Then
+            subCount = subCount + 1
+        ElseIf disc = 3 Then
+            multCount = multCount + 1
+        ElseIf disc = 4 Then
+            divCount = divCount + 1
+        End If
+        'Correct answer stored in variable 'ans'
+        ans = dataSet.Tables("OWL_DB").Rows(n).Item("answer")
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles submitBtn.Click
+        'Reopen connection if connection somehow closed
+        If connection.State = ConnectionState.Closed Then
+            connection.Open()
+        End If
+        'If statements that compare user-entered answer with correct answer in Answers table. Also keeps track of how many answers were correct for each discipline.
+        If answerBox.Text = "" Then
+            answerLabel.Text = "Please enter a value."
+        ElseIf answerBox.Text = ans Then
+            corrLabel.Text = "Correct!"
+            answerBox.Enabled = False
+            corrCount = corrCount + 1
+            If disc = 1 Then
+                addCorrCount = addCorrCount + 1
+            ElseIf disc = 2 Then
+                subCorrCount = subCorrCount + 1
+            ElseIf disc = 3 Then
+                multCorrCount = multCorrCount + 1
+            ElseIf disc = 4 Then
+                divCorrCount = divCorrCount + 1
+            End If
+        Else
+            'Displays correct answer if user was wrong. Disables answerBox to prevent user from cheating.
+            corrLabel.Text = "Incorrect!"
+            answerLabel.Text = "Correct Answer is: " + dataSet.Tables("OWL_DB").Rows(n).Item("answer").ToString()
+            answerBox.Enabled = False
+        End If
+    End Sub
+    Private Sub nextBtn_Click(sender As Object, e As EventArgs) Handles nextBtn.Click
+        'Reopen connection if connection somehow closed
+        If connection.State = ConnectionState.Closed Then
+            connection.Open()
+        End If
+        'Resets labels and answer box to blank for next question
+        corrLabel.Text = " "
+        answerLabel.Text = " "
+        answerBox.Text = " "
+        'Move to next row in Questions and Answers tables if there is another row to move on to.
+        If n <> MaxRows - 1 Then
+            n = n + 1
+            'Add to question counter
+            questionCount = questionCount + 1
+            'Reenable answerBox
+            answerBox.Enabled = True
+            'Call functions to navigate to the next question and answer
+            NavigateRecords()
+        Else MsgBox("No more questions", MsgBoxStyle.Information)
+            AssessmentResults.Show()
+            Me.Hide()
+        End If
+    End Sub
+End Class
