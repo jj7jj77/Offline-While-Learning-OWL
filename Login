@@ -1,0 +1,76 @@
+Imports System.Data.OleDb
+Imports System.Data
+Public Class Login
+    Dim connection As New OleDbConnection(My.Settings.OWL_DBConnectionString)
+    Dim sql As String
+    Dim dataAdapter As OleDb.OleDbDataAdapter
+    Dim dataSet As New DataSet
+    Dim n As Integer
+    Dim MaxRows As Integer
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles submitBtn.Click
+        'clear previous error message text
+        LblError.Hide()
+        LblError.Text = ""
+        'If statement to alert the user if they do not enter username or password and hit enter
+        If userBox.Text = Nothing Or passBox.Text = Nothing Then
+            'MsgBox("Enter Username and Password.", MsgBoxStyle.Exclamation)
+            LblError.Text = "Enter Username and Password!"
+            LblError.Show()
+        Else
+            'Open connection
+            If connection.State = ConnectionState.Closed Then
+                connection.Open()
+            End If
+            'Checks user entered username and password with Users table in databse to ensure credentials are correct
+            Dim cmd As New OleDbCommand("select userid from Users where userName=? and pwd=?", connection)
+            cmd.Parameters.AddWithValue("@1", OleDbType.VarChar).Value = userBox.Text
+            cmd.Parameters.AddWithValue("@2", OleDbType.VarChar).Value = passBox.Text
+            Dim loggedIn = Convert.ToInt32(cmd.ExecuteScalar())
+            If (loggedIn > 0) Then
+                'MsgBox("Login successful", MsgBoxStyle.Information)
+                UserID = loggedIn
+                ProblemSet.Show()
+                Me.Hide()
+            Else
+                'MsgBox("Account not found", MsgBoxStyle.Critical)
+                LblError.Text = "Account not found!"
+                LblError.Show()
+            End If
+        End If
+    End Sub
+
+    Private Sub exitBtn_Click(sender As Object, e As EventArgs) Handles ExitBtn.Click
+        End
+    End Sub
+
+    Private Sub newUserBtn_Click(sender As Object, e As EventArgs) Handles newUserBtn.Click
+        NewUser.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub forgetBtn_Click(sender As Object, e As EventArgs) Handles forgetBtn.Click
+        Dim name As String
+        Dim hint As String
+        sql = "Select userName, pwdHint from Users"
+        dataAdapter = New OleDb.OleDbDataAdapter(Sql, connection)
+        Dim cmd As New OleDbCommand(Sql, connection)
+        dataAdapter.Fill(DataSet, "OWL_DB")
+        Dim myUser As String = InputBox("Enter username")
+        For n = 1 To 10 Step +1
+            name = dataSet.Tables("OWL_DB").Rows(n).Item("userName")
+            hint = dataSet.Tables("OWL_DB").Rows(n).Item("pwdHint")
+            If myUser = name Then
+                'MsgBox("Hint: " & hint)
+                LblError.Text = "Hint: " & hint
+                LblError.Show()
+                Exit For
+            ElseIf (n = 10) And myUser <> name Then
+                'MsgBox("Username does not exist")
+                LblError.Text = "Username does not exist!"
+                LblError.Show()
+            End If
+        Next
+        n = 1
+    End Sub
+
+End Class
