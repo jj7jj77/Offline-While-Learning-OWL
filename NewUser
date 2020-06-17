@@ -1,0 +1,45 @@
+Imports System.Data.OleDb
+Imports System.Data
+Public Class NewUser
+    Dim connection As New OleDbConnection(My.Settings.OWL_DBConnectionString)
+
+    Private Sub SubmitBtn_Click(sender As Object, e As EventArgs) Handles SubmitBtn.Click
+        If userBox.Text = Nothing Or passBox.Text = Nothing Or hintBox.Text = Nothing Then
+            MsgBox("Enter desired username and password", MsgBoxStyle.Critical)
+        Else
+            If connection.State = ConnectionState.Closed Then
+                connection.Open()
+            End If
+            'Inserts username and password in Users table as new user. Also stores userType as parent or not parent
+            Dim cmd As New OleDbCommand("insert into Users(userName, pwd, userTypeID, updateType, pwdHint) values(?,?,?,?,?)", connection)
+            cmd.Parameters.AddWithValue("@1", OleDbType.VarChar).Value = userBox.Text
+            cmd.Parameters.AddWithValue("@2", OleDbType.VarChar).Value = passBox.Text
+            If parentCheck.Checked = True Then
+                cmd.Parameters.AddWithValue("@3", OleDbType.VarChar).Value = 1
+            Else
+                cmd.Parameters.AddWithValue("@3", OleDbType.VarChar).Value = 2
+            End If
+            cmd.Parameters.AddWithValue("@4", OleDbType.VarChar).Value = 1
+            cmd.Parameters.AddWithValue("@5", OleDbType.VarChar).Value = hintBox.Text
+            cmd.ExecuteNonQuery()
+            connection.Close()
+            If parentCheck.Checked = True Then
+                Login.Show()
+            Else
+                MsgBox("Account creation successful! You will now be redirected to take an Assessment Test", MsgBoxStyle.Information)
+                AssessmentGreeting.Show()
+            End If
+            Me.Hide()
+        End If
+    End Sub
+
+    'NEED to WORK ON.. where will this go? 
+    'click on the red dot to make it go away
+    Private Sub parentCheck_CheckedChanged(sender As Object, e As EventArgs) Handles parentCheck.CheckedChanged
+
+    End Sub
+
+    Private Sub ExitBtn_Click(sender As Object, e As EventArgs) Handles ExitBtn.Click
+        End
+    End Sub
+End Class
