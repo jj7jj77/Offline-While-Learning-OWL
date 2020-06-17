@@ -1,0 +1,69 @@
+Public Class ProblemSet
+    Private Sub LoginMenu_Click(sender As Object, e As EventArgs) Handles LoginMenu.Click
+        Login.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub ProgressionMenu_Click(sender As Object, e As EventArgs) Handles ProgressionMenu.Click
+        Progression.Show()
+        Me.Hide()
+    End Sub
+
+    'Displays a message box for the About Us Menu 
+    Private Sub AboutUsMenu_Click(sender As Object, e As EventArgs) Handles AboutUsMenu.Click
+        MsgBox("Our Mission 
+
+OWL inc. offers superior technology solutions for the education industry, providing the attention to detail and care that every student deserves.
+Our team will ensure that both parents and students can be satisfied with high quality learning products. 
+Our program will help students learn mathematics through a game-like environment that will keep them engaged. ")
+    End Sub
+
+    'Displays a message box for the Contact Us Menu
+    Private Sub ContactUsMenu_Click(sender As Object, e As EventArgs) Handles ContactUsMenu.Click
+        MsgBox("
+Names:                               E-mail:                    Contact Number:
+
+Scott Yanoff                    scott.a.yanoff@gmail.com            203-451-8644
+
+Julia Katz                      jj7jj7@gmail.com                    203-273-8807
+
+Michael Lawrence                michaellawrence193@gmail.com        804-517-0998
+
+Vathsav Tipirneni               vathsavtipirneni97@gmail.com        475-231-9054
+
+Meghan Polis                    meghan.polis@gmail.com              631-278-3117
+")
+    End Sub
+
+    Private Sub SubjectLabel_Click(sender As Object, e As EventArgs) Handles SubjectLabel.Click
+        addBtn.Checked = False
+        subBtn.Checked = False
+        multBtn.Checked = False
+        divBtn.Checked = False
+
+    End Sub
+
+    Private Sub submitBtn_Click(sender As Object, e As EventArgs) Handles submitBtn.Click
+        'set global quiz type variable
+        If addBtn.Checked = True Then
+            'set quiz type = 1 (addition)
+            QuizType = 1
+        ElseIf subBtn.Checked = True Then
+            'set quiz type = 2 (subtraction)
+            QuizType = 2
+        ElseIf multBtn.Checked = True Then
+            'set quiz type = 3 (multiplication)
+            QuizType = 3
+        ElseIf divBtn.Checked = True Then
+            'set quiz type = 4 (division)
+            QuizType = 4
+        End If
+        'open the one form
+        Quiz.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub ExitBtn_Click(sender As Object, e As EventArgs) Handles ExitBtn.Click
+        End
+    End Sub
+End Class
