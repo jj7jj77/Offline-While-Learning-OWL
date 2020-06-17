@@ -1,0 +1,16 @@
+Public Class testprogression
+    Private Sub testprogression_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'TODO: This line of code loads data into the 'OWL_DBDataSet.Grades' table. You can move, or remove it, as needed.
+        Me.GradesTableAdapter.Fill(Me.OWL_DBDataSet.Grades)
+
+    End Sub
+
+    Private Sub FillByToolStripButton_Click(sender As Object, e As EventArgs) Handles FillByToolStripButton.Click
+        Try
+            Me.GradesTableAdapter.FillBy(Me.OWL_DBDataSet.Grades)
+        Catch ex As System.Exception
+            System.Windows.Forms.MessageBox.Show(ex.Message)
+        End Try
+
+    End Sub
+End Class
