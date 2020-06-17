@@ -1,0 +1,98 @@
+Imports System.Data.OleDb
+Imports System.Data
+Public Class Progression
+
+    Private Sub Progression_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'TODO: This line of code loads data into the 'OWL_DBProgressionAss.Grades' table. You can move, or remove it, as needed.
+        Me.GradesTableAdapter4.Fill(Me.OWL_DBProgressionAss.Grades)
+        Try
+            'Fill the progression table data grid view with the user-specific progression information
+            Me.ProgressionTableAdapter.Fill(Me.OWL_DBProgressionDataSet.Progression, DiscVar.UserID)
+        Catch ex As System.Exception
+            System.Windows.Forms.MessageBox.Show("GRID:" & ex.Message)
+        End Try
+        Try
+            'Fill the addition chart with the user-specific progression information
+            Me.ProgAddTableAdapter1.Fill(Me.OWL_DBProgressionDataSet.ProgAdd, DiscVar.UserID)
+            'Me.ProgADDTableAdapter.Fill(Me.OWL_DBProgressionDataSet.ProgAdd, DiscVar.UserID)
+        Catch ex As System.Exception
+            System.Windows.Forms.MessageBox.Show("ADD:" & ex.Message)
+        End Try
+        Try
+            'Fill the subtraction chart with the user-specific progression information
+            Me.ProgSubTableAdapter.Fill(Me.OWL_DBProgressionDataSet.ProgSub, DiscVar.UserID)
+        Catch ex As System.Exception
+            System.Windows.Forms.MessageBox.Show("SUB:" & ex.Message)
+        End Try
+        Try
+            'Fill the multiplication chart with the user-specific progression information
+            Me.ProgMultTableAdapter.Fill(Me.OWL_DBProgressionDataSet.ProgMult, DiscVar.UserID)
+        Catch ex As System.Exception
+            System.Windows.Forms.MessageBox.Show("MULT:" & ex.Message)
+        End Try
+        Try
+            'Fill the division chart with the user-specific progression information
+            Me.ProgDivTableAdapter.Fill(Me.OWL_DBProgressionDataSet.ProgDiv, DiscVar.UserID)
+        Catch ex As System.Exception
+            System.Windows.Forms.MessageBox.Show("DIV:" & ex.Message)
+        End Try
+        Try
+            'Fill the assessment chart with the user-specific progression information
+            Me.ProgAssTableAdapter.Fill(Me.OWL_DBProgressionDataSet.ProgAss, DiscVar.UserID)
+        Catch ex As System.Exception
+            System.Windows.Forms.MessageBox.Show("ASSESSMENT:" & ex.Message)
+        End Try
+    End Sub
+
+    Private Sub ReturnBtn_Click(sender As Object, e As EventArgs) Handles ReturnBtn.Click
+        ProblemSet.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub ExitBtn_Click(sender As Object, e As EventArgs) Handles ExitBtn.Click
+        End
+    End Sub
+
+    Private Sub ProgChartViews_Click(sender As Object, e As EventArgs) Handles ProgChartViews.Click
+        'switch buttons
+        ProgChartViews.Hide()
+        ProgListView.Show()
+        'hide list view
+        lblTitleList.Hide()
+        DataGridView1.Hide()
+        'show chart views
+        lblTitleChart.Show()
+        AddChart.Show()
+        lblAddition.Show()
+        SubChart.Show()
+        lblSubtraction.Show()
+        MultChart.Show()
+        lblMultiplication.Show()
+        DivChart.Show()
+        lblDivision.Show()
+        ChartAssess.Show()
+        lblAssessment.Show()
+    End Sub
+
+    Private Sub ProgListView_Click(sender As Object, e As EventArgs) Handles ProgListView.Click
+        'switch buttons
+        ProgChartViews.Show()
+        ProgListView.Hide()
+        'show list view
+        lblTitleList.Show()
+        DataGridView1.Show()
+        'hide chart views
+        lblTitleChart.Hide()
+        AddChart.Hide()
+        lblAddition.Hide()
+        SubChart.Hide()
+        lblSubtraction.Hide()
+        MultChart.Hide()
+        lblMultiplication.Hide()
+        DivChart.Hide()
+        lblDivision.Hide()
+        ChartAssess.Hide()
+        lblAssessment.Hide()
+    End Sub
+
+End Class
