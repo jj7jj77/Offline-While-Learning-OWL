@@ -3,4 +3,5 @@
 *	Functionality included: loading math problems from a SQL database.
 
 **	Randomization of difficulty scaled problems with rotating problem sets and a direct feedback mechanism.
+
 **	Application access offline, following UX design principles tracking and analyzations of the target audience.
